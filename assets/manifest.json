@@ -1,0 +1,26 @@
+{
+    "bundles": [
+        {
+            "name": "game-screen",
+            "assets": [
+                {
+                    "alias": "background",
+                    "src": "assets/background/background.jpg"
+                },
+                {
+                    "alias": "enemy",
+                    "src": "assets/images/enemy.png"
+                }
+            ]
+        },
+        {
+            "name": "sounds",
+            "assets": [
+                {
+                    "alias": "music",
+                    "src": "assets/sounds/BGM_main_loop.wav"
+                }
+            ]
+        }
+    ]
+}
