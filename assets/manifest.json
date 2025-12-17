@@ -17,8 +17,12 @@
             "name": "sounds",
             "assets": [
                 {
-                    "alias": "music",
+                    "alias": "bg_music",
                     "src": "assets/sounds/BGM_main_loop.wav"
+                },
+                {
+                    "alias": "kill",
+                    "src": "assets/sounds/kill.wav"
                 }
             ]
         }
