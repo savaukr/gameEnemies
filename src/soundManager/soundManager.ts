@@ -1,8 +1,29 @@
 import { Howl } from "howler";
 
 export class SoundManager {
-    constructor() {}
+    constructor() {
+        this.soundBg = new Howl({
+            src: ["assets/sounds/BGM_main_loop.wav"],
+            autoplay: true,
+            loop: true,
+            volume: 0.2,
+            onend: function () {
+                console.log("Finished!");
+            },
+        });
+        this.soundKill = new Howl({
+            src: ["assets/sounds/kill2.wav"],
+            autoplay: true,
+            loop: false,
+            volume: 1,
+            onend: function () {
+                console.log("Finished!");
+            },
+        });
+    }
     private static instance: SoundManager;
+    soundBg: Howl | null = null;
+    soundKill: Howl | null = null;
 
     static getInstance() {
         if (SoundManager.instance) {
@@ -13,29 +34,11 @@ export class SoundManager {
     }
 
     playBg() {
-        const sound = new Howl({
-            src: ["assets/sounds/BGM_main_loop.wav"],
-            autoplay: true,
-            loop: true,
-            volume: 1,
-            onend: function () {
-                console.log("Finished!");
-            },
-        });
-        const id1 = sound.play();
+        const id1 = this.soundBg?.play();
         console.log("sound id1: ", id1);
     }
-    playSound(soundName: string) {
-        const sound = new Howl({
-            src: [soundName],
-            autoplay: true,
-            loop: false,
-            volume: 1,
-            onend: function () {
-                console.log("Finished!");
-            },
-        });
-        const id1 = sound.play();
+    playSoundKill() {
+        const id1 = this.soundKill?.play();
         console.log("sound id: ", id1);
     }
 }

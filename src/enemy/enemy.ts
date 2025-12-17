@@ -14,7 +14,7 @@ export class Enemy {
     };
     speed: TSpeed = { x: 1, y: -1 };
     timeInterval = Date.now();
-    currentLevel = 2;
+    currentLevel = 1;
     soundManager = SoundManager.getInstance();
 
     constructor(position: TPosition, speed: { x: number; y: number }) {
@@ -82,7 +82,7 @@ export class Enemy {
 
     killingSound(isKilled: boolean | null): void {
         if (isKilled) {
-            this.soundManager.playSound("kill");
+            this.soundManager.playSoundKill();
         }
         console.log("play sound isKilled: ", isKilled);
     }
