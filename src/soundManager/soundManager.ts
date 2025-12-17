@@ -14,7 +14,7 @@ export class SoundManager {
 
     playBg() {
         const sound = new Howl({
-            src: ["bg_music"],
+            src: ["assets/sounds/BGM_main_loop.wav"],
             autoplay: true,
             loop: true,
             volume: 1,
