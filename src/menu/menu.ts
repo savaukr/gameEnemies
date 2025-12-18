@@ -7,6 +7,7 @@ export class Menu {
     menuElement: HTMLDivElement | null = null;
     startBtn: HTMLButtonElement | null = null;
     menuItemMap = new Map<string, HTMLElement>();
+    soundManager = SoundManager.getInstance();
     isMuted = true;
     isPause = true;
     level: number = 0;
@@ -30,9 +31,17 @@ export class Menu {
         Object.values(BtnConfig).forEach((className) => {
             this.menuItemMap.set(className, this.createBtn(className));
         });
-        // const tempThis = this;
-        const soundManager = SoundManager.getInstance();
-        soundManager.muteAllSounds(this.isMuted);
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) {
+                console.log("visibilitychange");
+                this.pause();
+                const btn = this.menuItemMap.get(BtnConfig.PAUSE);
+                if (btn) {
+                    this.isPause = false;
+                    this.getPauseText(BtnConfig.PAUSE, btn);
+                }
+            }
+        });
         console.log(this.menuItemMap);
     }
     createBtnStart() {
@@ -58,11 +67,8 @@ export class Menu {
         this.menuElement?.appendChild(btn);
         btn.addEventListener("click", () => this.clickMenuBtn(className));
         if (className == BtnConfig.MUTE) {
-            if (this.isMuted) {
-                btn.innerText = "🔇";
-            } else {
-                btn.innerText = "🔊";
-            }
+            this.soundManager.muteAllSounds(this.isMuted);
+            this.getMuteText(btn, true);
         }
         return btn;
     }
@@ -71,24 +77,18 @@ export class Menu {
         const btn = this.menuItemMap.get(className);
         switch (className) {
             case BtnConfig.PAUSE:
-                if (this.isPause) {
-                    btn ? (btn.innerText = className) : "";
-                    this.restore();
-                } else {
-                    btn ? (btn.innerText = "restore") : "";
-                    this.pause();
+                if (btn) {
+                    this.getPauseText(className, btn);
                 }
                 break;
             case BtnConfig.BOOSTER:
                 break;
             case BtnConfig.MUTE:
                 const soundManager = SoundManager.getInstance();
-                if (this.isMuted) {
-                    btn?.innerText ? (btn.innerText = "🔊") : "";
-                } else {
-                    btn?.innerText ? (btn.innerText = "🔇") : "";
+                if (btn) {
+                    this.isMuted = !this.isMuted;
+                    this.getMuteText(btn, this.isMuted);
                 }
-                this.isMuted = !this.isMuted;
                 soundManager.muteAllSounds(this.isMuted);
                 break;
             default:
@@ -133,6 +133,7 @@ export class Menu {
         this.setIntervalId = null;
         this.isPause = true;
         this.pauseTime = Date.now();
+        this.soundManager.muteAllSounds(true);
     }
 
     restore() {
@@ -142,6 +143,23 @@ export class Menu {
         }, 1000);
         this.isPause = false;
         this.pauseTime = Date.now() - this.pauseTime;
+        this.soundManager.muteAllSounds(this.isMuted);
+    }
+    getPauseText(className: string, btn: HTMLElement) {
+        if (this.isPause) {
+            btn.innerText = className;
+            this.restore();
+        } else {
+            btn.innerText = "restore";
+            this.pause();
+        }
+    }
+    getMuteText(btn: HTMLElement, isMuted: boolean) {
+        if (isMuted) {
+            btn?.innerText ? (btn.innerText = "🔇") : "";
+        } else {
+            btn?.innerText ? (btn.innerText = "🔊") : "";
+        }
     }
 
     updTimer() {
