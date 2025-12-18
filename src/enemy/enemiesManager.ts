@@ -1,11 +1,18 @@
-import configuration from "../configuration/config.json";
+import configuration from "../configuration/configEnemies.json";
 import { Enemy } from "./enemy";
 import { FederatedPointerEvent } from "pixi.js";
 import { SoundManager } from "../soundManager/soundManager";
 
-export class Enemies {
+export class EnemiesManager {
     enemyList: (Enemy | null)[] = [];
-    constructor() {}
+    private static instance: EnemiesManager;
+    static getInstance() {
+        if (EnemiesManager.instance) {
+            return this.instance;
+        }
+        this.instance = new EnemiesManager();
+        return this.instance;
+    }
 
     initAllEnemies() {
         configuration.enemies.forEach((itemConfig) => {
@@ -39,3 +46,4 @@ export class Enemies {
         this.run();
     }
 }
+export const enemies = EnemiesManager.getInstance();

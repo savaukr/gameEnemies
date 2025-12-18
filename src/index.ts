@@ -2,7 +2,8 @@ import { Application, Assets } from "pixi.js";
 import "./style.css";
 import { loadAssets, setBackground } from "./utils/loader";
 import { gameLoop } from "./gameLoop";
-import { Enemies } from "./enemy/enemies";
+import { enemies } from "./enemy/enemiesManager";
+import { Menu } from "./menu/menu";
 
 declare global {
     interface Window {
@@ -19,14 +20,14 @@ window.__PIXI_APP__ = app;
 
 document.body.appendChild(app.view);
 
-let enemies: Enemies | null = null;
 try {
     loadAssets().then(() => {
         if (Assets.resolver.hasBundle("game-screen")) {
             setBackground();
-            enemies = new Enemies();
             enemies.initAllEnemies();
             console.log(enemies.enemyList);
+            const menu = new Menu();
+            menu.init();
         }
     });
 } catch (error) {
@@ -40,9 +41,7 @@ app.stage.on("pointerdown", (event) => {
 });
 app.ticker.add(() => {
     try {
-        if (enemies) {
-            gameLoop(enemies);
-        }
+        gameLoop(enemies);
     } catch (err) {
         console.log("ERROR", err);
     }

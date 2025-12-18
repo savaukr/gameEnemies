@@ -1,8 +1,29 @@
 import { Howl } from "howler";
 
 export class SoundManager {
-    constructor() {}
     private static instance: SoundManager;
+    soundBg: Howl | null = null;
+    soundKill: Howl | null = null;
+    constructor() {
+        this.soundBg = new Howl({
+            src: ["assets/sounds/BGM_main_loop.wav"],
+            autoplay: true,
+            loop: true,
+            volume: 0.4,
+            // onend: function () {
+            //     console.log("BG sound finished!");
+            // },
+        });
+        this.soundKill = new Howl({
+            src: ["assets/sounds/kill2.wav"],
+            autoplay: true,
+            loop: false,
+            volume: 1,
+            // onend: function () {
+            //     console.log("Kill sound finished!");
+            // },
+        });
+    }
 
     static getInstance() {
         if (SoundManager.instance) {
@@ -13,29 +34,15 @@ export class SoundManager {
     }
 
     playBg() {
-        const sound = new Howl({
-            src: ["assets/sounds/BGM_main_loop.wav"],
-            autoplay: true,
-            loop: true,
-            volume: 1,
-            onend: function () {
-                console.log("Finished!");
-            },
-        });
-        const id1 = sound.play();
-        console.log("sound id1: ", id1);
+        const id1 = this.soundBg?.play();
+        console.log("sound bg: ", id1);
     }
-    playSound(soundName: string) {
-        const sound = new Howl({
-            src: [soundName],
-            autoplay: true,
-            loop: false,
-            volume: 1,
-            onend: function () {
-                console.log("Finished!");
-            },
-        });
-        const id1 = sound.play();
-        console.log("sound id: ", id1);
+    playSoundKill() {
+        const id1 = this.soundKill?.play();
+        console.log("sound kill: ", id1);
+    }
+
+    muteAllSounds(isMuted: boolean) {
+        Howler.mute(isMuted);
     }
 }

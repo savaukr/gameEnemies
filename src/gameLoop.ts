@@ -1,6 +1,6 @@
-import { Enemies } from "./enemy/enemies";
+import { EnemiesManager } from "./enemy/enemiesManager";
 
-export function gameLoop(enemies: Enemies) {
+export function gameLoop(enemies: EnemiesManager) {
     // console.log("ok");
     enemies.update();
 }

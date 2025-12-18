@@ -3,3 +3,51 @@ body {
     margin: 0 auto;
     background-color: black;
 }
+.menu-wrapper {
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 12px;
+    padding: 0 12px;
+}
+
+.menuItem {
+    height: 40px;
+    width: 100px;
+    background: rgba(26, 90, 128, 0.6);
+    cursor: pointer;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: white;
+}
+.menuItem:hover {
+    background: rgba(36, 80, 128, 0.8);
+    color: azure;
+}
+.menuCounter {
+    cursor: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    color: aliceblue;
+}
+.menuBtn {
+}
+.startBtn {
+    border-radius: 50%;
+    width: 100px;
+    background: rgba(26, 90, 128, 0.6);
+    height: 100px;
+    font-size: 20px;
+    position: absolute;
+    top: calc(50% - 50px);
+    left: calc(50% - 50px);
+}
+.startBtn.hide {
+    display: none;
+}

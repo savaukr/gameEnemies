@@ -20,6 +20,7 @@
         "build": "npm run webpack -- --env mode=production",
         "start": "http-server dist -o",
         "lint": "eslint . --ext .ts,.tsx && npx prettier --check **/*.{ts,js,json}",
+        "eslint-fix": "eslint --fix --ext .js,.jsx,.ts,.tsx src",
         "prepare": "husky install"
     },
     "author": "jkanchelov",

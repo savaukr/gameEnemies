@@ -1,4 +1,4 @@
-import { TPosition, TSpeed } from "../configuration/interface";
+import { TPosition, TSpeed } from "../types/types";
 import { Assets, FederatedPointerEvent, Sprite, Texture } from "pixi.js";
 import { app } from "../index";
 import { getCanvasSize } from "../utils/calculateCanvasZize";
@@ -14,8 +14,7 @@ export class Enemy {
     };
     speed: TSpeed = { x: 1, y: -1 };
     timeInterval = Date.now();
-    currentLevel = 2;
-    soundManager = SoundManager.getInstance();
+    currentLevel = 1;
 
     constructor(position: TPosition, speed: { x: number; y: number }) {
         this.position = position;
@@ -26,8 +25,8 @@ export class Enemy {
         const enemyTexture: Texture = Assets.get("enemy"); // Це Texture
         const enemy: Sprite = Sprite.from(enemyTexture);
         enemy.position = this.position;
-        enemy.zIndex = 10;
-        enemy.anchor.set(0);
+        // enemy.zIndex = 10;
+        enemy.anchor.set(0.5);
         app.stage.addChild(enemy);
         enemy.eventMode = "static";
         enemy.cursor = "cell";
@@ -82,7 +81,8 @@ export class Enemy {
 
     killingSound(isKilled: boolean | null): void {
         if (isKilled) {
-            this.soundManager.playSound("kill");
+            const soundManager = SoundManager.getInstance();
+            soundManager.playSoundKill();
         }
         console.log("play sound isKilled: ", isKilled);
     }
