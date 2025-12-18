@@ -25,17 +25,10 @@ export class Enemy {
         const enemyTexture: Texture = Assets.get("enemy"); // Це Texture
         const enemy: Sprite = Sprite.from(enemyTexture);
         enemy.position = this.position;
-        // enemy.zIndex = 10;
         enemy.anchor.set(0.5);
         app.stage.addChild(enemy);
         enemy.eventMode = "static";
         enemy.cursor = "cell";
-        // enemy.on("pointerdown", (event) => {
-        //     this.killingSound();
-        //     // this.kill();
-        //     console.log("Клік або тач!");
-        //     console.log("Позиція:", event.global.x, event.global.y);
-        // });
         this.enemy = enemy;
     }
 
@@ -84,7 +77,6 @@ export class Enemy {
             const soundManager = SoundManager.getInstance();
             soundManager.playSoundKill();
         }
-        console.log("play sound isKilled: ", isKilled);
     }
 
     updSpeed() {

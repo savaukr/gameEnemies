@@ -4,6 +4,8 @@ import { loadAssets, setBackground } from "./utils/loader";
 import { gameLoop } from "./gameLoop";
 import { enemies } from "./enemy/enemiesManager";
 import { Menu } from "./menu/menu";
+import { Modal } from "./modal/modal";
+import { loseModal } from "./configuration/configModal";
 
 declare global {
     interface Window {
@@ -25,9 +27,11 @@ try {
         if (Assets.resolver.hasBundle("game-screen")) {
             setBackground();
             enemies.initAllEnemies();
-            console.log(enemies.enemyList);
-            const menu = new Menu();
-            menu.init();
+            new Menu().init();
+            const modal = new Modal(loseModal.text);
+            app.stage.addChild(modal);
+
+            modal.open();
         }
     });
 } catch (error) {
@@ -36,7 +40,6 @@ try {
 app.stage.eventMode = "static";
 app.stage.cursor = "default";
 app.stage.on("pointerdown", (event) => {
-    console.log("Клік на canvas:", event.global.x, event.global.y);
     enemies?.updEnemyList(event);
 });
 app.ticker.add(() => {

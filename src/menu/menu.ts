@@ -1,7 +1,9 @@
 import { MenuHeight } from "../const/const";
 import { BtnConfig, CounterConfig, maxTimerConfig } from "../configuration/configMenu";
-import { app } from "../index";
+import configuration from "../configuration/configEnemies.json";
 import { SoundManager } from "../soundManager/soundManager";
+import { enemies } from "../enemy/enemiesManager";
+import { app } from "../index";
 
 export class Menu {
     menuElement: HTMLDivElement | null = null;
@@ -11,7 +13,6 @@ export class Menu {
     isMuted = true;
     isPause = true;
     level: number = 0;
-    // currentTime: number = 0;
     prevTime: number = 0;
     pauseTime: number = 0;
     remainingTime: number = maxTimerConfig[this.level];
@@ -33,7 +34,6 @@ export class Menu {
         });
         document.addEventListener("visibilitychange", () => {
             if (document.hidden) {
-                console.log("visibilitychange");
                 this.pause();
                 const btn = this.menuItemMap.get(BtnConfig.PAUSE);
                 if (btn) {
@@ -42,7 +42,6 @@ export class Menu {
                 }
             }
         });
-        console.log(this.menuItemMap);
     }
     createBtnStart() {
         this.startBtn = document.createElement("button");
@@ -105,18 +104,19 @@ export class Menu {
                             maxTimerConfig[this.level] - (Date.now() - this.prevTime - this.pauseTime) / 1000;
                     }
                     counter.innerText = this.remainingTime > 0 ? `${Math.floor(this.remainingTime)} s` : "0 s";
-                    console.log("this.prevTime=", this.prevTime / 1000);
-                    console.log("this.pauseTime=", this.pauseTime / 1000);
-                    console.log(`${Math.floor(this.remainingTime)} s`);
                     break;
                 case CounterConfig.ENEMIES:
-                    counter.innerText = "enemies:";
+                    counter.innerText = `${Object.keys(configuration.enemies).length} / ${
+                        enemies.getEminemies().length || 0
+                    } `;
+                    enemies.onEnemiesCount.subscibe((enemiesCount) => {
+                        counter.innerText = `${Object.keys(configuration.enemies).length} / ${enemiesCount}`;
+                    });
                     break;
                 default:
                     console.log("unknown counter");
             }
         }
-        console.log("update counter", className);
     }
     clickStartBtn() {
         this.isPause = false;
@@ -125,7 +125,6 @@ export class Menu {
             this.updCounter(CounterConfig.TIMER);
         }, 1000);
         this.startBtn?.classList.toggle("hide");
-        console.log("click start btn");
     }
 
     pause() {
@@ -160,9 +159,5 @@ export class Menu {
         } else {
             btn?.innerText ? (btn.innerText = "🔊") : "";
         }
-    }
-
-    updTimer() {
-        // if (this.prevTime) this.currentTime = Date.now() - this.prevTime;
     }
 }

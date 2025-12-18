@@ -2,9 +2,11 @@ import configuration from "../configuration/configEnemies.json";
 import { Enemy } from "./enemy";
 import { FederatedPointerEvent } from "pixi.js";
 import { SoundManager } from "../soundManager/soundManager";
+import { EventEmitters } from "./eventEmitters";
 
 export class EnemiesManager {
-    enemyList: (Enemy | null)[] = [];
+    onEnemiesCount = new EventEmitters<number>();
+    private enemyList: (Enemy | null)[] = [];
     private static instance: EnemiesManager;
     static getInstance() {
         if (EnemiesManager.instance) {
@@ -33,7 +35,7 @@ export class EnemiesManager {
             }
         });
         this.enemyList = this.enemyList?.filter((_, ind) => !indexesKilled.has(ind));
-        console.log(this?.enemyList);
+        this.onEnemiesCount.emit(this.enemyList.length);
     }
 
     run(): void {
@@ -44,6 +46,9 @@ export class EnemiesManager {
 
     update() {
         this.run();
+    }
+    getEminemies() {
+        return this.enemyList;
     }
 }
 export const enemies = EnemiesManager.getInstance();
