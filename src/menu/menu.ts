@@ -4,8 +4,10 @@ import configuration from "../configuration/configEnemies.json";
 import { SoundManager } from "../soundManager/soundManager";
 import { enemies } from "../enemy/enemiesManager";
 import { app } from "../index";
+import { EventEmitters } from "../enemy/eventEmitters";
 
 export class Menu {
+    onGameStart = new EventEmitters<boolean>();
     menuElement: HTMLDivElement | null = null;
     startBtn: HTMLButtonElement | null = null;
     menuItemMap = new Map<string, HTMLElement>();
@@ -107,7 +109,7 @@ export class Menu {
                     break;
                 case CounterConfig.ENEMIES:
                     counter.innerText = `${Object.keys(configuration.enemies).length} / ${
-                        enemies.getEminemies().length || 0
+                        enemies.getEnimies().length || 0
                     } `;
                     enemies.onEnemiesCount.subscibe((enemiesCount) => {
                         counter.innerText = `${Object.keys(configuration.enemies).length} / ${enemiesCount}`;
@@ -125,6 +127,7 @@ export class Menu {
             this.updCounter(CounterConfig.TIMER);
         }, 1000);
         this.startBtn?.classList.toggle("hide");
+        this.onGameStart.emit(true);
     }
 
     pause() {
@@ -161,3 +164,5 @@ export class Menu {
         }
     }
 }
+
+export const menu = new Menu();

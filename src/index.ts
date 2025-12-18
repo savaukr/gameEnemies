@@ -3,7 +3,7 @@ import "./style.css";
 import { loadAssets, setBackground } from "./utils/loader";
 import { gameLoop } from "./gameLoop";
 import { enemies } from "./enemy/enemiesManager";
-import { Menu } from "./menu/menu";
+import { menu } from "./menu/menu";
 import { Modal } from "./modal/modal";
 import { loseModal } from "./configuration/configModal";
 
@@ -27,11 +27,11 @@ try {
         if (Assets.resolver.hasBundle("game-screen")) {
             setBackground();
             enemies.initAllEnemies();
-            new Menu().init();
+            menu.init();
             const modal = new Modal(loseModal.text);
             app.stage.addChild(modal);
 
-            modal.open();
+            // modal.open();
         }
     });
 } catch (error) {

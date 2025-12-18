@@ -3,11 +3,14 @@ import { Enemy } from "./enemy";
 import { FederatedPointerEvent } from "pixi.js";
 import { SoundManager } from "../soundManager/soundManager";
 import { EventEmitters } from "./eventEmitters";
+import { menu } from "../menu/menu";
 
 export class EnemiesManager {
     onEnemiesCount = new EventEmitters<number>();
     private enemyList: (Enemy | null)[] = [];
     private static instance: EnemiesManager;
+    isStart: boolean = false;
+
     static getInstance() {
         if (EnemiesManager.instance) {
             return this.instance;
@@ -24,6 +27,10 @@ export class EnemiesManager {
         });
         const soundManager = SoundManager.getInstance();
         soundManager.playBg();
+
+        menu.onGameStart.subscibe(async (isStart) => {
+            this.isStart = isStart;
+        });
     }
 
     updEnemyList(event: FederatedPointerEvent): void {
@@ -45,9 +52,11 @@ export class EnemiesManager {
     }
 
     update() {
-        this.run();
+        if (this.isStart) {
+            this.run();
+        }
     }
-    getEminemies() {
+    getEnimies() {
         return this.enemyList;
     }
 }
