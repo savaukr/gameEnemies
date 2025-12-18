@@ -31,6 +31,8 @@ export class Menu {
             this.menuItemMap.set(className, this.createBtn(className));
         });
         // const tempThis = this;
+        const soundManager = SoundManager.getInstance();
+        soundManager.muteAllSounds(this.isMuted);
         console.log(this.menuItemMap);
     }
     createBtnStart() {
@@ -55,6 +57,13 @@ export class Menu {
         btn.innerText = className;
         this.menuElement?.appendChild(btn);
         btn.addEventListener("click", () => this.clickMenuBtn(className));
+        if (className == BtnConfig.MUTE) {
+            if (this.isMuted) {
+                btn.innerText = "🔇";
+            } else {
+                btn.innerText = "🔊";
+            }
+        }
         return btn;
     }
 
@@ -75,12 +84,12 @@ export class Menu {
             case BtnConfig.MUTE:
                 const soundManager = SoundManager.getInstance();
                 if (this.isMuted) {
-                    btn?.innerText ? (btn.innerText = "mute") : "";
+                    btn?.innerText ? (btn.innerText = "🔊") : "";
                 } else {
-                    btn?.innerText ? (btn.innerText = "unmute") : "";
+                    btn?.innerText ? (btn.innerText = "🔇") : "";
                 }
-                soundManager.muteAllSounds(this.isMuted);
                 this.isMuted = !this.isMuted;
+                soundManager.muteAllSounds(this.isMuted);
                 break;
             default:
                 console.log("unknown menu item ");

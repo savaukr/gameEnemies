@@ -15,7 +15,6 @@ export class Enemy {
     speed: TSpeed = { x: 1, y: -1 };
     timeInterval = Date.now();
     currentLevel = 1;
-    currentLevel = 1;
 
     constructor(position: TPosition, speed: { x: number; y: number }) {
         this.position = position;
