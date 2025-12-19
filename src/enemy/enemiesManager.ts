@@ -4,12 +4,14 @@ import { FederatedPointerEvent } from "pixi.js";
 import { SoundManager } from "../soundManager/soundManager";
 import { EventEmitters } from "./eventEmitters";
 import { menu } from "../menu/menu";
+import { ELevel } from "../configuration/configLevel";
 
 export class EnemiesManager {
     onEnemiesCount = new EventEmitters<number>();
     private enemyList: (Enemy | null)[] = [];
     private static instance: EnemiesManager;
     isStart: boolean = false;
+    level: number = ELevel.FIRST;
 
     static getInstance() {
         if (EnemiesManager.instance) {
@@ -19,7 +21,8 @@ export class EnemiesManager {
         return this.instance;
     }
 
-    initAllEnemies() {
+    initAllEnemies(level: ELevel = ELevel.FIRST) {
+        this.level = level;
         configuration.enemies.forEach((itemConfig) => {
             const enemy = new Enemy({ x: itemConfig.x, y: itemConfig.y }, itemConfig.speed);
             enemy.init();

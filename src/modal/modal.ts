@@ -1,13 +1,13 @@
 import * as PIXI from "pixi.js";
 import { app } from "../index";
-import { getModaltyle } from "./style";
+// type Resolver<T> = (value: T) => void;
 
 export class Modal extends PIXI.Container {
     private overlay: PIXI.Graphics;
     private container: PIXI.Container;
-    resolver: ((value: unknown) => void) | null = null;
+    resolver: ((value: boolean) => void) | null = null;
 
-    constructor(innerText: string, width = 500, height = 350) {
+    constructor(innerText: string, width = 340, height = 360) {
         super();
         this.width = width;
         this.height = height;
@@ -39,19 +39,42 @@ export class Modal extends PIXI.Container {
         closeBtn.interactive = true;
         closeBtn.cursor = "pointer";
 
-        closeBtn.on("pointerdown", () => this.close());
-
+        closeBtn.on("pointerdown", () => this.close(false));
         this.container.addChild(closeBtn);
+
+        const noBtn = new PIXI.Text(" NO", {
+            fontSize: 24,
+            fill: 0x4b001d,
+        });
+        noBtn.x = width / 2 - 120;
+        noBtn.y = height - 60;
+        noBtn.interactive = true;
+        noBtn.cursor = "pointer";
+        noBtn.on("pointerdown", () => this.close(false)); // true
+        this.container.addChild(noBtn);
+
+        const yesBtn = new PIXI.Text("YES", {
+            fontSize: 24,
+            fill: 0x10412f,
+        });
+        yesBtn.x = width / 2 + 65;
+        yesBtn.y = height - 60;
+        yesBtn.interactive = true;
+        yesBtn.cursor = "pointer";
+        yesBtn.on("pointerdown", () => this.close(true)); // true
+        this.container.addChild(yesBtn);
 
         const text = new PIXI.Text(innerText, {
             fontSize: 32,
             fill: 0x000000,
+            align: "center",
+            wordWrap: true,
+            wordWrapWidth: width * 0.8,
         });
 
         text.anchor.set(0.5);
         text.x = width / 2;
         text.y = height / 2;
-        text.style = getModaltyle(this.width);
 
         this.container.addChild(text);
 
@@ -59,19 +82,21 @@ export class Modal extends PIXI.Container {
         window.addEventListener("resize", () => this.calculateModalSize());
     }
 
-    open() {
+    open(): Promise<boolean> {
         return new Promise((resolve) => {
             this.visible = true;
             console.log("open modal");
             this.resolver = resolve;
+            return true;
         });
     }
 
-    close() {
+    close(result: boolean): void {
         this.visible = false;
         console.log("close modal");
         if (this.resolver !== null) {
-            this.resolver(this);
+            this.resolver(result);
+            this.resolver = null;
         }
     }
 

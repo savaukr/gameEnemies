@@ -5,8 +5,10 @@ import { SoundManager } from "../soundManager/soundManager";
 import { enemies } from "../enemy/enemiesManager";
 import { app } from "../index";
 import { EventEmitters } from "../enemy/eventEmitters";
+import { ELevel } from "../configuration/configLevel";
 
 export class Menu {
+    private static instance: Menu;
     onGameStart = new EventEmitters<boolean>();
     menuElement: HTMLDivElement | null = null;
     startBtn: HTMLButtonElement | null = null;
@@ -25,6 +27,13 @@ export class Menu {
         this.menuElement.style.height = MenuHeight + "px";
         const body = document.getElementsByTagName("body")[0];
         body.insertBefore(this.menuElement, body.firstChild);
+    }
+    static getInstance() {
+        if (Menu.instance) {
+            return this.instance;
+        }
+        this.instance = new Menu();
+        return this.instance;
     }
     init() {
         this.createBtnStart();
@@ -163,6 +172,12 @@ export class Menu {
             btn?.innerText ? (btn.innerText = "🔊") : "";
         }
     }
+    setLevel(level: ELevel): void {
+        this.level = level;
+    }
+    getRemainingTime(): number {
+        return this.remainingTime;
+    }
 }
 
-export const menu = new Menu();
+export const menu = Menu.getInstance();

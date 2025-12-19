@@ -13,7 +13,7 @@ export async function gameFlow() {
         await loadAssets();
         if (Assets.resolver.hasBundle("game-screen")) {
             setBackground();
-            enemies.initAllEnemies();
+            enemies.initAllEnemies(ELevel.FIRST);
             menu.init();
         }
     } catch (error) {
@@ -25,6 +25,8 @@ export async function gameFlow() {
     });
     let isWin,
         isLose = false;
+    let isStartNextLevel = false;
+    let isRepeatLevel = false;
 
     app.stage.eventMode = "static";
     app.stage.cursor = "default";
@@ -36,9 +38,9 @@ export async function gameFlow() {
         });
     });
 
-    const isStarted: boolean = false;
-    const level: ELevel = ELevel.FIRST;
-    const timeRemaining: number = maxTimerConfig[level];
+    let isStarted: boolean = false;
+    let level: ELevel = ELevel.FIRST;
+    let timeRemaining: number = maxTimerConfig[level];
 
     const modalLose: Modal = new Modal(modalTextes.loseModal.text);
     const modalWin: Modal = new Modal(modalTextes.winModal.text);
@@ -48,15 +50,30 @@ export async function gameFlow() {
     (async (): Promise<void> => {
         while (true) {
             await waiter;
-            console.log("game function  isStarted=", isStarted, "  timeRemaining=", timeRemaining);
-            console.log("level=", level);
+            timeRemaining = menu.getRemainingTime();
+            console.log("game function timeRemaining=", timeRemaining);
+            console.log("isStarted=", isStarted);
+            isWin = enemies.getEnimies().length ? false : true;
             if (isWin) {
-                await modalWin.open();
+                isStartNextLevel = await modalWin.open();
+                console.log("isStartNextLevel=", isStartNextLevel);
                 isWin = false;
             }
+            if (isStartNextLevel) {
+                level < ELevel.THIRD ? level++ : "";
+                menu.setLevel(level);
+                enemies.initAllEnemies(level);
+                isStarted = true;
+                isStartNextLevel = false;
+            }
             if (isLose) {
-                await modalLose.open();
+                isRepeatLevel = await modalLose.open();
                 isLose = false;
+            }
+            if (isRepeatLevel) {
+                enemies.initAllEnemies(level);
+                isRepeatLevel = false;
+                isStarted = true;
             }
         }
     })();

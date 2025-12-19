@@ -47,8 +47,8 @@ body {
     height: 90px;
     font-size: 24px;
     position: absolute;
-    top: calc(50% - 110px);
-    left: calc(50% - 60px);
+    top: calc(50% - 90px);
+    left: calc(50% - 110px);
 }
 .startBtn.hide {
     display: none;
