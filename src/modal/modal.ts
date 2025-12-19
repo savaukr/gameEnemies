@@ -5,6 +5,7 @@ import { getModaltyle } from "./style";
 export class Modal extends PIXI.Container {
     private overlay: PIXI.Graphics;
     private container: PIXI.Container;
+    resolver: ((value: unknown) => void) | null = null;
 
     constructor(innerText: string, width = 500, height = 350) {
         super();
@@ -59,11 +60,19 @@ export class Modal extends PIXI.Container {
     }
 
     open() {
-        this.visible = true;
+        return new Promise((resolve) => {
+            this.visible = true;
+            console.log("open modal");
+            this.resolver = resolve;
+        });
     }
 
     close() {
         this.visible = false;
+        console.log("close modal");
+        if (this.resolver !== null) {
+            this.resolver(this);
+        }
     }
 
     calculateModalSize() {
