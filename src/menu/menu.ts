@@ -17,9 +17,12 @@ export class Menu {
     isMuted = true;
     isPause = true;
     level: number = 0;
+    startTime: number = 0;
+    newStartTime: number = 0;
     prevTime: number = 0;
-    pauseTime: number = 0;
-    remainingTime: number = maxTimerConfig[this.level];
+    totalTime: number = 0;
+    // pauseTime: number = 0;
+    remainingTime: number = maxTimerConfig[this.level] - this.totalTime;
     setIntervalId: ReturnType<typeof setInterval> | null = null;
     constructor() {
         this.menuElement = document.createElement("div");
@@ -111,8 +114,11 @@ export class Menu {
             switch (className) {
                 case CounterConfig.TIMER:
                     if (!this.isPause && this.remainingTime > 0) {
-                        this.remainingTime =
-                            maxTimerConfig[this.level] - (Date.now() - this.prevTime - this.pauseTime) / 1000;
+                        // this.remainingTime =
+                        //     maxTimerConfig[this.level] - (Date.now() - this.prevTime - this.pauseTime) / 1000;
+                        this.totalTime +=
+                            (this.prevTime - this.startTime + (new Date().getTime() - this.newStartTime)) / 1000;
+                        this.remainingTime = maxTimerConfig[this.level] - this.totalTime;
                     }
                     counter.innerText = this.remainingTime > 0 ? `${Math.floor(this.remainingTime)} s` : "0 s";
                     break;
@@ -131,7 +137,7 @@ export class Menu {
     }
     clickStartBtn() {
         this.isPause = false;
-        this.prevTime = Date.now();
+        this.startTime = Date.now();
         this.setIntervalId = setInterval(() => {
             this.updCounter(CounterConfig.TIMER);
         }, 1000);
@@ -143,7 +149,7 @@ export class Menu {
         app.ticker.stop();
         this.setIntervalId = null;
         this.isPause = true;
-        this.pauseTime = Date.now();
+        this.prevTime = Date.now();
         this.soundManager.muteAllSounds(true);
     }
 
@@ -153,9 +159,10 @@ export class Menu {
             this.updCounter(CounterConfig.TIMER);
         }, 1000);
         this.isPause = false;
-        this.pauseTime = Date.now() - this.pauseTime;
+        this.newStartTime = Date.now();
         this.soundManager.muteAllSounds(this.isMuted);
     }
+
     getPauseText(className: string, btn: HTMLElement) {
         if (this.isPause) {
             btn.innerText = className;
@@ -177,6 +184,11 @@ export class Menu {
     }
     getRemainingTime(): number {
         return this.remainingTime;
+    }
+    showStartBtn() {
+        if (this.startBtn) {
+            this.startBtn.classList.remove("hide");
+        }
     }
 }
 
