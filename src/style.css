@@ -33,9 +33,11 @@ body {
     font-size: 16px;
     color: aliceblue;
 }
-.menuBtn {
+.menuBtn.disabled {
+    background: grey;
+    color: black;
 }
-.menuBtn:hover,
+.menuBtn:hover:not(.disabled),
 .startBtn:hover {
     background: rgba(36, 80, 128, 0.8);
     color: azure;

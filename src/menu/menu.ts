@@ -17,12 +17,9 @@ export class Menu {
     isMuted = true;
     isPause = true;
     level: number = 0;
-    startTime: number = 0;
-    newStartTime: number = 0;
-    prevTime: number = 0;
-    totalTime: number = 0;
-    // pauseTime: number = 0;
-    remainingTime: number = maxTimerConfig[this.level] - this.totalTime;
+    startRoundTime: number = 0;
+    totalRoundTime: number = 0;
+    remainingRoundTime: number = maxTimerConfig[this.level] - this.totalRoundTime;
     setIntervalId: ReturnType<typeof setInterval> | null = null;
     constructor() {
         this.menuElement = document.createElement("div");
@@ -41,28 +38,32 @@ export class Menu {
     init() {
         this.createBtnStart();
         Object.values(CounterConfig).forEach((className) => {
-            this.menuItemMap.set(className, this.createCounter(className));
+            this.createCounter(className);
         });
         Object.values(BtnConfig).forEach((className) => {
-            this.menuItemMap.set(className, this.createBtn(className));
+            this.createBtn(className);
         });
         document.addEventListener("visibilitychange", () => {
             if (document.hidden) {
+                this.setPauseText(BtnConfig.PAUSE);
                 this.pause();
-                const btn = this.menuItemMap.get(BtnConfig.PAUSE);
-                if (btn) {
-                    this.isPause = false;
-                    this.getPauseText(BtnConfig.PAUSE, btn);
-                }
             }
         });
+        console.log("this.menuItemMap", this.menuItemMap);
     }
     createBtnStart() {
         this.startBtn = document.createElement("button");
         this.startBtn.classList.add("startBtn", "menuItem");
         this.startBtn.innerText = "START";
         this.menuElement?.appendChild(this.startBtn);
-        this.startBtn.addEventListener("click", () => this.clickStartBtn());
+        this.startBtn.addEventListener("click", () => {
+            this.menuItemMap.get(BtnConfig.PAUSE)?.classList.remove("disabled");
+            const btn = this.menuItemMap.get(BtnConfig.PAUSE);
+            if (btn) {
+                (btn as HTMLButtonElement).disabled = false;
+            }
+            this.clickStartBtn();
+        });
     }
     createCounter(className: string) {
         const counter = document.createElement("div");
@@ -73,16 +74,21 @@ export class Menu {
         return counter;
     }
 
-    createBtn(className: string) {
+    createBtn(className: (typeof BtnConfig)[keyof typeof BtnConfig]) {
         const btn = document.createElement("button");
         btn.classList.add("menuItem", "menuBtn", className);
         btn.innerText = className;
-        this.menuElement?.appendChild(btn);
         btn.addEventListener("click", () => this.clickMenuBtn(className));
+        this.menuItemMap.set(className, btn);
+        if (className == BtnConfig.PAUSE) {
+            btn.classList.add("disabled");
+            btn.disabled = true;
+        }
         if (className == BtnConfig.MUTE) {
             this.soundManager.muteAllSounds(this.isMuted);
-            this.getMuteText(btn, true);
+            this.getMuteText(this.isMuted);
         }
+        this.menuElement?.appendChild(btn);
         return btn;
     }
 
@@ -90,9 +96,8 @@ export class Menu {
         const btn = this.menuItemMap.get(className);
         switch (className) {
             case BtnConfig.PAUSE:
-                if (btn) {
-                    this.getPauseText(className, btn);
-                }
+                this.setPauseText(className);
+                this.isPause ? this.restore() : this.pause();
                 break;
             case BtnConfig.BOOSTER:
                 break;
@@ -100,7 +105,7 @@ export class Menu {
                 const soundManager = SoundManager.getInstance();
                 if (btn) {
                     this.isMuted = !this.isMuted;
-                    this.getMuteText(btn, this.isMuted);
+                    this.getMuteText(this.isMuted);
                 }
                 soundManager.muteAllSounds(this.isMuted);
                 break;
@@ -113,14 +118,13 @@ export class Menu {
         if (counter) {
             switch (className) {
                 case CounterConfig.TIMER:
-                    if (!this.isPause && this.remainingTime > 0) {
-                        // this.remainingTime =
-                        //     maxTimerConfig[this.level] - (Date.now() - this.prevTime - this.pauseTime) / 1000;
-                        this.totalTime +=
-                            (this.prevTime - this.startTime + (new Date().getTime() - this.newStartTime)) / 1000;
-                        this.remainingTime = maxTimerConfig[this.level] - this.totalTime;
+                    if (!this.isPause && this.remainingRoundTime > 0) {
+                        this.remainingRoundTime =
+                            maxTimerConfig[this.level] -
+                            (this.totalRoundTime + (Date.now() - this.startRoundTime)) / 1000;
                     }
-                    counter.innerText = this.remainingTime > 0 ? `${Math.floor(this.remainingTime)} s` : "0 s";
+                    counter.innerText =
+                        this.remainingRoundTime > 0 ? `${Math.floor(this.remainingRoundTime)} s` : "0 s";
                     break;
                 case CounterConfig.ENEMIES:
                     counter.innerText = `${Object.keys(configuration.enemies).length} / ${
@@ -137,10 +141,11 @@ export class Menu {
     }
     clickStartBtn() {
         this.isPause = false;
-        this.startTime = Date.now();
+        this.startRoundTime = Date.now();
         this.setIntervalId = setInterval(() => {
             this.updCounter(CounterConfig.TIMER);
         }, 1000);
+        this.menuItemMap.get(BtnConfig.PAUSE)?.classList.remove("disabled");
         this.startBtn?.classList.toggle("hide");
         this.onGameStart.emit(true);
     }
@@ -149,7 +154,7 @@ export class Menu {
         app.ticker.stop();
         this.setIntervalId = null;
         this.isPause = true;
-        this.prevTime = Date.now();
+        this.totalRoundTime = this.totalRoundTime + (Date.now() - this.startRoundTime);
         this.soundManager.muteAllSounds(true);
     }
 
@@ -159,20 +164,20 @@ export class Menu {
             this.updCounter(CounterConfig.TIMER);
         }, 1000);
         this.isPause = false;
-        this.newStartTime = Date.now();
+        this.startRoundTime = Date.now();
         this.soundManager.muteAllSounds(this.isMuted);
     }
 
-    getPauseText(className: string, btn: HTMLElement) {
+    setPauseText(className: string) {
+        const btn = this.menuItemMap.get(BtnConfig.PAUSE);
         if (this.isPause) {
-            btn.innerText = className;
-            this.restore();
+            btn ? (btn.innerText = className) : "";
         } else {
-            btn.innerText = "restore";
-            this.pause();
+            btn ? (btn.innerText = "restore") : "";
         }
     }
-    getMuteText(btn: HTMLElement, isMuted: boolean) {
+    getMuteText(isMuted: boolean) {
+        const btn = this.menuItemMap.get(BtnConfig.MUTE);
         if (isMuted) {
             btn?.innerText ? (btn.innerText = "🔇") : "";
         } else {
@@ -183,7 +188,7 @@ export class Menu {
         this.level = level;
     }
     getRemainingTime(): number {
-        return this.remainingTime;
+        return this.remainingRoundTime;
     }
     showStartBtn() {
         if (this.startBtn) {
