@@ -1,13 +1,14 @@
 import * as PIXI from "pixi.js";
 import { app } from "../index";
-import { Assets, Sprite, Texture } from "pixi.js";
+import { Sprite } from "pixi.js";
 // type Resolver<T> = (value: T) => void;
 
 export class Modal extends PIXI.Container {
     private overlay: PIXI.Graphics;
-    private container: PIXI.Container;
+    container: PIXI.Container;
     resolver: ((value: boolean) => void) | null = null;
-    stars: Sprite[] = [];
+    activeStarsList: Sprite[] = [];
+    notActiveStarsList: Sprite[] = [];
 
     constructor(innerText: string, width = 340, height = 360) {
         super();
@@ -81,7 +82,7 @@ export class Modal extends PIXI.Container {
         this.container.addChild(text);
 
         this.visible = false;
-        this.createStars();
+
         // window.addEventListener("resize", () => this.calculateModalSize());
     }
 
@@ -101,20 +102,6 @@ export class Modal extends PIXI.Container {
             this.resolver(result);
             this.resolver = null;
         }
-    }
-
-    createStar(assetKey: string): Sprite {
-        const starTexture: Texture = Assets.get(assetKey);
-        const star: Sprite = Sprite.from(starTexture);
-        app.stage.addChild(star);
-        star.cursor = "default";
-        return star;
-    }
-    createStars() {
-        [0, 1, 2].forEach(() => {
-            const star = this.createStar("activeStar");
-            this.container.addChild(star);
-        });
     }
 
     // calculateModalSize() {

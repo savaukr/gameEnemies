@@ -4,8 +4,11 @@ import { app } from "./index";
 import { loadAssets, setBackground } from "./utils/loader";
 import { Assets } from "pixi.js";
 import { menu } from "./menu/menu";
-import { Modal } from "./modal/modal";
+
 import { modalTextes } from "./configuration/configModal";
+import { ERating, ModalWin } from "./modal/modalWIn";
+import { Modal } from "./modal/modal";
+import { getRating } from "./utils/getRating";
 
 export async function gameFlow() {
     try {
@@ -33,13 +36,14 @@ export async function gameFlow() {
     });
 
     let level: ELevel = ELevel.FIRST;
+    let rating: ERating = ERating.ZERO;
     let timeRemaining: number;
     let isWin,
         isLose = false;
     let isStartNextLevel = false;
     let isRepeatLevel = false;
     const modalLose: Modal = new Modal(modalTextes.loseModal.text);
-    const modalWin: Modal = new Modal(modalTextes.winModal.text);
+    const modalWin: ModalWin = new ModalWin(modalTextes.winModal.text);
     app.stage.addChild(modalLose);
     app.stage.addChild(modalWin);
     enemies.subscribOnStart();
@@ -50,7 +54,10 @@ export async function gameFlow() {
             timeRemaining = menu.getRemainingTime();
             isWin = enemies.getEnimies().length && timeRemaining >= 0 ? false : true;
             if (isWin) {
+                rating = getRating(timeRemaining, level);
+                modalWin.updLevelRating(rating);
                 isStartNextLevel = await modalWin.open();
+                modalWin.resetRating();
                 isWin = false;
             }
             if (isStartNextLevel) {
