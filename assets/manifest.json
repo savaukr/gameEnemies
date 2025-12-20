@@ -10,6 +10,10 @@
                 {
                     "alias": "enemy",
                     "src": "assets/images/enemy.png"
+                },
+                {
+                    "alias": "activeStar",
+                    "src": "assets/images/activeStar.png"
                 }
             ]
         },

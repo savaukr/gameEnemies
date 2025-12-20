@@ -34,12 +34,10 @@ export class SoundManager {
     }
 
     playBg() {
-        const id1 = this.soundBg?.play();
-        console.log("sound bg: ", id1);
+        this.soundBg?.play();
     }
     playSoundKill() {
-        const id1 = this.soundKill?.play();
-        console.log("sound kill: ", id1);
+        this.soundKill?.play();
     }
 
     muteAllSounds(isMuted: boolean) {

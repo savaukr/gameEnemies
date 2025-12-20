@@ -4,7 +4,7 @@ import configuration from "../configuration/configEnemies.json";
 import { SoundManager } from "../soundManager/soundManager";
 import { enemies } from "../enemy/enemiesManager";
 import { app } from "../index";
-import { EventEmitters } from "../enemy/eventEmitters";
+import { EventEmitters } from "../eventEmitters/eventEmitters";
 import { ELevel } from "../configuration/configLevel";
 
 export class Menu {
@@ -14,9 +14,10 @@ export class Menu {
     startBtn: HTMLButtonElement | null = null;
     menuItemMap = new Map<string, HTMLElement>();
     soundManager = SoundManager.getInstance();
+    isStarted = false;
     isMuted = true;
     isPause = true;
-    level: number = 0;
+    level: number = ELevel.FIRST;
     startRoundTime: number = 0;
     totalRoundTime: number = 0;
     remainingRoundTime: number = maxTimerConfig[this.level] - this.totalRoundTime;
@@ -49,7 +50,12 @@ export class Menu {
                 this.pause();
             }
         });
-        console.log("this.menuItemMap", this.menuItemMap);
+        const counter = this.menuItemMap.get(CounterConfig.ENEMIES);
+        if (counter) {
+            enemies.onEnemiesCount.subscibe((enemiesCount) => {
+                counter.innerText = `${Object.keys(configuration.enemies).length} / ${enemiesCount}`;
+            });
+        }
     }
     createBtnStart() {
         this.startBtn = document.createElement("button");
@@ -92,7 +98,7 @@ export class Menu {
         return btn;
     }
 
-    clickMenuBtn(className: string) {
+    clickMenuBtn(className: (typeof BtnConfig)[keyof typeof BtnConfig]) {
         const btn = this.menuItemMap.get(className);
         switch (className) {
             case BtnConfig.PAUSE:
@@ -118,7 +124,12 @@ export class Menu {
         if (counter) {
             switch (className) {
                 case CounterConfig.TIMER:
-                    if (!this.isPause && this.remainingRoundTime > 0) {
+                    if (
+                        this.isStarted &&
+                        !this.isPause &&
+                        this.remainingRoundTime > 0 &&
+                        enemies.getEnimies().length > 0
+                    ) {
                         this.remainingRoundTime =
                             maxTimerConfig[this.level] -
                             (this.totalRoundTime + (Date.now() - this.startRoundTime)) / 1000;
@@ -130,9 +141,6 @@ export class Menu {
                     counter.innerText = `${Object.keys(configuration.enemies).length} / ${
                         enemies.getEnimies().length || 0
                     } `;
-                    enemies.onEnemiesCount.subscibe((enemiesCount) => {
-                        counter.innerText = `${Object.keys(configuration.enemies).length} / ${enemiesCount}`;
-                    });
                     break;
                 default:
                     console.log("unknown counter");
@@ -140,7 +148,10 @@ export class Menu {
         }
     }
     clickStartBtn() {
+        enemies.initAllEnemies(this.level);
+        this.updCounter(CounterConfig.ENEMIES);
         this.isPause = false;
+        this.isStarted = true;
         this.startRoundTime = Date.now();
         this.setIntervalId = setInterval(() => {
             this.updCounter(CounterConfig.TIMER);
@@ -194,6 +205,12 @@ export class Menu {
         if (this.startBtn) {
             this.startBtn.classList.remove("hide");
         }
+    }
+    resetCounter() {
+        this.setIntervalId = null;
+        this.remainingRoundTime = maxTimerConfig[this.level];
+        this.updCounter(CounterConfig.TIMER);
+        this.updCounter(CounterConfig.ENEMIES);
     }
 }
 

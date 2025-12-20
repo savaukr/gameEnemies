@@ -1,11 +1,13 @@
 import * as PIXI from "pixi.js";
 import { app } from "../index";
+import { Assets, Sprite, Texture } from "pixi.js";
 // type Resolver<T> = (value: T) => void;
 
 export class Modal extends PIXI.Container {
     private overlay: PIXI.Graphics;
     private container: PIXI.Container;
     resolver: ((value: boolean) => void) | null = null;
+    stars: Sprite[] = [];
 
     constructor(innerText: string, width = 340, height = 360) {
         super();
@@ -79,7 +81,8 @@ export class Modal extends PIXI.Container {
         this.container.addChild(text);
 
         this.visible = false;
-        window.addEventListener("resize", () => this.calculateModalSize());
+        this.createStars();
+        // window.addEventListener("resize", () => this.calculateModalSize());
     }
 
     open(): Promise<boolean> {
@@ -100,20 +103,21 @@ export class Modal extends PIXI.Container {
         }
     }
 
-    calculateModalSize() {
-        // const { width: canvasWidth, height: canvasHeight } = getCanvasSize();
-        // if (canvasWidth < this.width) {
-        //     this.container.scale.set(canvasWidth / this.width);
-        // }
-        // if (canvasHeight < this.height) {
-        //     this.container.scale.set(canvasHeight / this.height);
-        // }
-        // // this.container.width = canvasWidth > this.width ? this.width : canvasWidth * 0.8;
-        // // this.container.width = canvasHeight > this.height ? this.height : canvasHeight * 0.8;
-        // this.container.x = app.screen.width / 2;
-        // this.container.y = app.screen.height / 2;
-        // this.container.pivot.set(this.container.width / 2, this.container.height / 2);
-        // this.overlay.width = app.screen.width;
-        // this.overlay.height = app.screen.height;
+    createStar(assetKey: string): Sprite {
+        const starTexture: Texture = Assets.get(assetKey);
+        const star: Sprite = Sprite.from(starTexture);
+        app.stage.addChild(star);
+        star.cursor = "default";
+        return star;
     }
+    createStars() {
+        [0, 1, 2].forEach(() => {
+            const star = this.createStar("activeStar");
+            this.container.addChild(star);
+        });
+    }
+
+    // calculateModalSize() {
+    //     "resize for modal"
+    // }
 }

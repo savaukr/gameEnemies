@@ -2,7 +2,7 @@ import configuration from "../configuration/configEnemies.json";
 import { Enemy } from "./enemy";
 import { FederatedPointerEvent } from "pixi.js";
 import { SoundManager } from "../soundManager/soundManager";
-import { EventEmitters } from "./eventEmitters";
+import { EventEmitters } from "../eventEmitters/eventEmitters";
 import { menu } from "../menu/menu";
 import { ELevel } from "../configuration/configLevel";
 
@@ -20,20 +20,22 @@ export class EnemiesManager {
         this.instance = new EnemiesManager();
         return this.instance;
     }
+    subscribOnStart() {
+        menu.onGameStart.subscibe((isStart) => {
+            this.isStart = isStart;
+        });
+    }
 
     initAllEnemies(level: ELevel = ELevel.FIRST) {
         this.level = level;
         configuration.enemies.forEach((itemConfig) => {
             const enemy = new Enemy({ x: itemConfig.x, y: itemConfig.y }, itemConfig.speed);
+            enemy.updCurrentLevel(level);
             enemy.init();
             this.enemyList?.push(enemy);
         });
         const soundManager = SoundManager.getInstance();
         soundManager.playBg();
-
-        menu.onGameStart.subscibe(async (isStart) => {
-            this.isStart = isStart;
-        });
     }
 
     updEnemyList(event: FederatedPointerEvent): void {
@@ -61,6 +63,9 @@ export class EnemiesManager {
     }
     getEnimies() {
         return this.enemyList;
+    }
+    removeAllEnmies() {
+        this.enemyList = [];
     }
 }
 export const enemies = EnemiesManager.getInstance();

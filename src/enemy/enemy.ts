@@ -5,6 +5,7 @@ import { getCanvasSize } from "../utils/calculateCanvasZize";
 import { EnymeHeight, EnymeWidth, maxSpeed } from "../const/const";
 import { random } from "../utils/getRandom";
 import { SoundManager } from "../soundManager/soundManager";
+import { ELevel } from "../configuration/configLevel";
 
 export class Enemy {
     enemy: Sprite | null = null;
@@ -14,7 +15,7 @@ export class Enemy {
     };
     speed: TSpeed = { x: 1, y: -1 };
     timeInterval = Date.now();
-    currentLevel = 1;
+    currentLevel: ELevel = ELevel.FIRST;
 
     constructor(position: TPosition, speed: { x: number; y: number }) {
         this.position = position;
@@ -22,10 +23,10 @@ export class Enemy {
     }
 
     init() {
-        const enemyTexture: Texture = Assets.get("enemy"); // Це Texture
+        const enemyTexture: Texture = Assets.get("enemy");
         const enemy: Sprite = Sprite.from(enemyTexture);
         enemy.position = this.position;
-        enemy.anchor.set(0.5);
+        enemy.anchor.set(0);
         // enemy.zIndex = 10;
         app.stage.addChild(enemy);
         enemy.eventMode = "static";
