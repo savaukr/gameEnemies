@@ -51,6 +51,7 @@ export async function gameFlow() {
     (async (): Promise<void> => {
         while (true) {
             await waiterClick;
+            console.log("level= ", level);
             timeRemaining = menu.getRemainingTime();
             isWin = enemies.getEnimies().length && timeRemaining >= 0 ? false : true;
             if (isWin) {

@@ -56,7 +56,7 @@ export class Enemy {
             const y = this.enemy.position.y;
             const canvasSize = getCanvasSize();
 
-            if (x < 0) {
+            if (x < 0 - EnymeWidth) {
                 this.enemy.position.x = canvasSize.width;
             } else if (x > canvasSize.width) {
                 this.enemy.position.x = 0;
@@ -64,7 +64,7 @@ export class Enemy {
                 this.enemy.position.x = x + this.speed.x;
             }
 
-            if (y < 0) {
+            if (y < 0 - EnymeHeight) {
                 this.enemy.position.y = canvasSize.height;
             } else if (y > canvasSize.height) {
                 this.enemy.position.y = 0;
@@ -86,8 +86,8 @@ export class Enemy {
             return;
         }
         this.speed = {
-            x: random(-maxSpeed, maxSpeed) * this.currentLevel,
-            y: random(-maxSpeed, maxSpeed) * this.currentLevel,
+            x: random(-maxSpeed, maxSpeed) * (this.currentLevel + 1),
+            y: random(-maxSpeed, maxSpeed) * (this.currentLevel + 1),
         };
         this.timeInterval = Date.now();
     }

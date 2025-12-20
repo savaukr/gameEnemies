@@ -89,7 +89,6 @@ export class Modal extends PIXI.Container {
     open(): Promise<boolean> {
         return new Promise((resolve) => {
             this.visible = true;
-            console.log("open modal");
             this.resolver = resolve;
             return true;
         });
@@ -97,7 +96,6 @@ export class Modal extends PIXI.Container {
 
     close(result: boolean): void {
         this.visible = false;
-        console.log("close modal");
         if (this.resolver !== null) {
             this.resolver(result);
             this.resolver = null;
