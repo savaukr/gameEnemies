@@ -27,6 +27,7 @@
     "license": "MIT",
     "dependencies": {
         "core-js": "^3.34.0",
+        "easytimer.js": "^4.6.0",
         "howler": "^2.2.4",
         "pixi-console": "^4.0.0",
         "pixi-spine": "^4.0.4",

@@ -28,7 +28,7 @@ export class EnemiesManager {
 
     initAllEnemies(level: ELevel = ELevel.FIRST) {
         this.level = level;
-        configuration.enemies.forEach((itemConfig) => {
+        configuration.enemies[level].forEach((itemConfig) => {
             const enemy = new Enemy({ x: itemConfig.x, y: itemConfig.y }, itemConfig.speed);
             enemy.updCurrentLevel(level);
             enemy.init();
