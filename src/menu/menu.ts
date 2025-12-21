@@ -7,6 +7,7 @@ import { app } from "../index";
 import { EventEmitters } from "../eventEmitters/eventEmitters";
 import { ELevel } from "../configuration/configLevel";
 import Timer from "easytimer.js";
+import { FederatedPointerEvent } from "pixi.js";
 
 export class Menu {
     private static instance: Menu;
@@ -23,6 +24,7 @@ export class Menu {
     timer = new Timer();
     boosterTime = 0;
     remainingRoundTime: number = maxTimerConfig[this.level] + this.boosterTime;
+    clickHandler: (event: FederatedPointerEvent) => void = () => {};
 
     constructor() {
         this.menuElement = document.createElement("div");
@@ -60,11 +62,27 @@ export class Menu {
         }
         this.timer.addEventListener("secondsUpdated", () => {
             if (this.remainingRoundTime <= 0) {
-                console.log("this.remainingRoundTime less zero");
+                const canvas = app.view;
+                const rect = canvas.getBoundingClientRect();
+
+                canvas.dispatchEvent(
+                    new PointerEvent("pointerdown", {
+                        bubbles: true,
+                        cancelable: true,
+                        clientX: rect.left + 100,
+                        clientY: rect.top + 100,
+                    }),
+                );
+                console.log("this.remainingRoundTime less zero", event);
             }
             this.updCounter(CounterConfig.TIMER);
         });
     }
+
+    setClickHandler(clickHandler: (event: FederatedPointerEvent) => void) {
+        this.clickHandler = clickHandler;
+    }
+
     createBtnStart() {
         this.startBtn = document.createElement("button");
         this.startBtn.classList.add("startBtn", "menuItem");
@@ -137,7 +155,6 @@ export class Menu {
         if (counter) {
             switch (className) {
                 case CounterConfig.TIMER:
-                    console.log("this.remainingRoundTime", this.remainingRoundTime);
                     if (
                         this.isStarted &&
                         !this.isPause &&

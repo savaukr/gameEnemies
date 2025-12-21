@@ -2,7 +2,7 @@ import { enemies } from "./enemy/enemiesManager";
 import { ELevel } from "./configuration/configLevel";
 import { app } from "./index";
 import { loadAssets, setBackground } from "./utils/loader";
-import { Assets } from "pixi.js";
+import { Assets, FederatedPointerEvent } from "pixi.js";
 import { menu } from "./menu/menu";
 
 import { modalTextes } from "./configuration/configModal";
@@ -24,16 +24,19 @@ export async function gameFlow() {
     let waiterClick = new Promise((resolve) => {
         resolver = resolve;
     });
-
+    let clickHandler: (event: FederatedPointerEvent) => void;
     app.stage.eventMode = "static";
     app.stage.cursor = "default";
-    app.stage.on("pointerdown", (event) => {
-        resolver(event);
-        enemies?.updEnemyList(event);
-        waiterClick = new Promise((resolve) => {
-            resolver = resolve;
-        });
-    });
+    app.stage.on(
+        "pointerdown",
+        (clickHandler = (event: FederatedPointerEvent) => {
+            resolver(event);
+            enemies?.updEnemyList(event);
+            waiterClick = new Promise((resolve) => {
+                resolver = resolve;
+            });
+        }),
+    );
 
     let level: ELevel = ELevel.FIRST;
     let rating: ERating = ERating.ZERO;
@@ -47,6 +50,7 @@ export async function gameFlow() {
     app.stage.addChild(modalLose);
     app.stage.addChild(modalWin);
     enemies.subscribOnStart();
+    menu.setClickHandler(clickHandler);
 
     (async (): Promise<void> => {
         while (true) {
