@@ -27,7 +27,6 @@ export class Enemy {
         const enemy: Sprite = Sprite.from(enemyTexture);
         enemy.position = this.position;
         enemy.anchor.set(0);
-        // enemy.zIndex = 10;
         app.stage.addChild(enemy);
         enemy.eventMode = "static";
         enemy.cursor = "cell";

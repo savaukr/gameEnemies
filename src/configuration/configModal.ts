@@ -5,4 +5,7 @@ export const modalTextes = {
     winModal: {
         text: "Congratulation, good job!\n Start next round?",
     },
+    winModalAbs: {
+        text: "Congratulation, you are winner!\n Start that round again?",
+    },
 };

@@ -7,13 +7,18 @@ export class Modal extends PIXI.Container {
     private overlay: PIXI.Graphics;
     container: PIXI.Container;
     resolver: ((value: boolean) => void) | null = null;
+    text: string = "";
+    textElement: PIXI.Text | null = null;
     activeStarsList: Sprite[] = [];
     notActiveStarsList: Sprite[] = [];
+    modalWidth: number;
+    modalHeight: number;
 
     constructor(innerText: string, width = 340, height = 360) {
         super();
-        this.width = width;
-        this.height = height;
+        this.modalWidth = width;
+        this.modalHeight = height;
+        this.text = innerText;
         this.overlay = new PIXI.Graphics()
             .beginFill(0x000000, 0.8)
             .drawRect(0, 0, app.screen.width, app.screen.height)
@@ -67,7 +72,7 @@ export class Modal extends PIXI.Container {
         yesBtn.on("pointerdown", () => this.close(true)); // true
         this.container.addChild(yesBtn);
 
-        const text = new PIXI.Text(innerText, {
+        this.textElement = new PIXI.Text(innerText, {
             fontSize: 32,
             fill: 0x000000,
             align: "center",
@@ -75,11 +80,12 @@ export class Modal extends PIXI.Container {
             wordWrapWidth: width * 0.8,
         });
 
-        text.anchor.set(0.5);
-        text.x = width / 2;
-        text.y = height / 2;
+        this.textElement.anchor.set(0.5);
+        this.textElement.width = width * 0.9;
+        this.textElement.x = width / 2;
+        this.textElement.y = height / 2;
 
-        this.container.addChild(text);
+        this.container.addChild(this.textElement);
 
         this.visible = false;
 

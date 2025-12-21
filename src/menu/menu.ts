@@ -27,7 +27,7 @@ export class Menu {
         this.menuElement.classList.add("menu-wrapper");
         this.menuElement.style.height = MenuHeight + "px";
         const body = document.getElementsByTagName("body")[0];
-        body.insertBefore(this.menuElement, body.firstChild);
+        body.append(this.menuElement);
     }
     static getInstance() {
         if (Menu.instance) {
@@ -57,6 +57,9 @@ export class Menu {
             });
         }
         this.timer.addEventListener("secondsUpdated", () => {
+            if (this.remainingRoundTime <= 0) {
+                console.log("this.remainingRoundTime less zero");
+            }
             this.updCounter(CounterConfig.TIMER);
         });
     }
@@ -141,7 +144,7 @@ export class Menu {
                 case CounterConfig.ENEMIES:
                     counter.innerText = `${Object.keys(configuration.enemies[this.level]).length} / ${
                         enemies.getEnimies().length || 0
-                    } `;
+                    }`;
                     break;
                 default:
                     console.log("unknown counter");
@@ -149,13 +152,14 @@ export class Menu {
         }
     }
     clickStartBtn() {
+        this.timer.reset();
         enemies.initAllEnemies(this.level);
         this.updCounter(CounterConfig.ENEMIES);
         this.isPause = false;
         this.isStarted = true;
-        this.timer.start();
         this.menuItemMap.get(BtnConfig.PAUSE)?.classList.remove("disabled");
         this.startBtn?.classList.toggle("hide");
+        this.timer.start();
         this.onGameStart.emit(true);
     }
 

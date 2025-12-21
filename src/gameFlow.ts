@@ -53,13 +53,16 @@ export async function gameFlow() {
             await waiterClick;
             console.log("level= ", level);
             timeRemaining = menu.getRemainingTime();
-            isWin = enemies.getEnimies().length && timeRemaining >= 0 ? false : true;
+            isWin = !enemies.getEnimies().length && timeRemaining > 0 ? true : false;
+            isLose = enemies.getEnimies().length && timeRemaining <= 0 ? true : false;
+            if (isWin && level === ELevel.THIRD) {
+                modalWin.setText(modalTextes.winModalAbs.text);
+            }
             if (isWin) {
                 rating = getRating(timeRemaining, level);
                 modalWin.updLevelRating(rating);
                 isStartNextLevel = await modalWin.open();
                 modalWin.resetRating();
-                isWin = false;
             }
             if (isStartNextLevel) {
                 level < ELevel.THIRD ? level++ : "";
@@ -68,20 +71,32 @@ export async function gameFlow() {
                 enemies.initAllEnemies(level);
                 menu.resetCounter();
                 isStartNextLevel = false;
+                isWin = false;
+            } else {
+                if (isWin) {
+                    enemies.removeAllEnmies();
+                    isWin = false;
+                    level = ELevel.FIRST;
+                    menu.setLevel(level);
+                    menu.resetCounter();
+                    menu.showStartBtn();
+                }
             }
             if (isLose) {
+                enemies.removeAllEnmies();
                 isRepeatLevel = await modalLose.open();
-                isLose = false;
             }
             if (isRepeatLevel) {
+                menu.resetCounter();
                 enemies.initAllEnemies(level);
-                menu.resetCounter();
                 isRepeatLevel = false;
-            }
-            if ((!isStartNextLevel && !isRepeatLevel && !enemies.getEnimies().length) || timeRemaining <= 0) {
-                enemies.removeAllEnmies();
-                menu.resetCounter();
-                menu.showStartBtn();
+                isLose = false;
+            } else {
+                if (isLose) {
+                    menu.resetCounter();
+                    isLose = false;
+                    menu.showStartBtn();
+                }
             }
         }
     })();

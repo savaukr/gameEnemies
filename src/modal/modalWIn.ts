@@ -1,5 +1,6 @@
 import { Modal } from "./modal";
 import { Assets, Sprite, Texture } from "pixi.js";
+import * as PIXI from "pixi.js";
 
 export enum ERating {
     ZERO = 0,
@@ -17,6 +18,31 @@ export class ModalWin extends Modal {
         super(innerText, width, height);
         this.createStars(EStars.ACTIVE_STAR);
         this.createStars(EStars.NOT_ACTIVE_STAR);
+    }
+    setText(innerText: string) {
+        console.log(this.modalWidth);
+        console.log(this.modalHeight);
+        this.text = innerText;
+
+        if (this.textElement) {
+            this.container.removeChild(this.textElement);
+            this.textElement.destroy();
+            this.textElement = null;
+        }
+        this.textElement = new PIXI.Text(innerText, {
+            fontSize: 32,
+            fill: 0x000000,
+            align: "center",
+            wordWrap: true,
+            wordWrapWidth: this.width * 0.8,
+        });
+
+        this.textElement.anchor.set(0.5);
+        this.textElement.width = this.modalWidth * 0.9;
+        this.textElement.x = this.modalWidth / 2;
+        this.textElement.y = this.modalHeight / 2;
+
+        this.container.addChild(this.textElement);
     }
     createStar(assetKey: EStars): Sprite {
         const starTexture: Texture = Assets.get(assetKey);

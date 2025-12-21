@@ -65,6 +65,9 @@ export class EnemiesManager {
         return this.enemyList;
     }
     removeAllEnmies() {
+        this.enemyList?.forEach((enemy) => {
+            enemy?.enemy?.destroy();
+        });
         this.enemyList = [];
     }
 }
