@@ -10,8 +10,8 @@ export class EnemiesManager {
     onEnemiesCount = new EventEmitters<number>();
     private enemyList: (Enemy | null)[] = [];
     private static instance: EnemiesManager;
-    isStart: boolean = false;
-    level: number = ELevel.FIRST;
+    private isStart: boolean = false;
+    private level: number = ELevel.FIRST;
 
     static getInstance() {
         if (EnemiesManager.instance) {

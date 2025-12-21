@@ -2,8 +2,8 @@ import { Howl } from "howler";
 
 export class SoundManager {
     private static instance: SoundManager;
-    soundBg: Howl | null = null;
-    soundKill: Howl | null = null;
+    private soundBg: Howl | null = null;
+    private soundKill: Howl | null = null;
     constructor() {
         this.soundBg = new Howl({
             src: ["assets/sounds/BGM_main_loop.wav"],

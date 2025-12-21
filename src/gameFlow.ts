@@ -9,9 +9,12 @@ import { modalTextes } from "./configuration/configModal";
 import { ERating, ModalWin } from "./modal/modalWIn";
 import { Modal } from "./modal/modal";
 import { getRating } from "./utils/getRating";
+import { SoundManager } from "./soundManager/soundManager";
 
 export async function gameFlow() {
     try {
+        const soundManager = new SoundManager();
+        soundManager.muteAllSounds(true);
         await loadAssets();
         if (Assets.resolver.hasBundle("game-screen")) {
             setBackground();

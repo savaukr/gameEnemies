@@ -12,18 +12,18 @@ import { FederatedPointerEvent } from "pixi.js";
 export class Menu {
     private static instance: Menu;
     onGameStart = new EventEmitters<boolean>();
-    menuElement: HTMLDivElement | null = null;
-    startBtn: HTMLButtonElement | null = null;
+    private menuElement: HTMLDivElement | null = null;
+    private startBtn: HTMLButtonElement | null = null;
     menuItemMap = new Map<string, HTMLElement>();
-    soundManager = SoundManager.getInstance();
-    isStarted = false;
-    isMuted = true;
-    isPause = true;
-    level: number = ELevel.FIRST;
-    setIntervalId: ReturnType<typeof setInterval> | null = null;
-    timer = new Timer();
-    boosterTime = 0;
-    remainingRoundTime: number = maxTimerConfig[this.level] + this.boosterTime;
+    private soundManager = SoundManager.getInstance();
+    private isStarted = false;
+    private isMuted = true;
+    private isPause = true;
+    private level: number = ELevel.FIRST;
+    private setIntervalId: ReturnType<typeof setInterval> | null = null;
+    private timer = new Timer();
+    private boosterTime = 0;
+    private remainingRoundTime: number = maxTimerConfig[this.level] + this.boosterTime;
     clickHandler: (event: FederatedPointerEvent) => void = () => {};
 
     constructor() {

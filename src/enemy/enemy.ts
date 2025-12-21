@@ -9,13 +9,13 @@ import { ELevel } from "../configuration/configLevel";
 
 export class Enemy {
     enemy: Sprite | null = null;
-    position: TPosition = {
+    private position: TPosition = {
         x: getCanvasSize().width - (this.enemy?.width || 100),
         y: getCanvasSize().height - (this.enemy?.height || 100),
     };
-    speed: TSpeed = { x: 1, y: -1 };
-    timeInterval = Date.now();
-    currentLevel: ELevel = ELevel.FIRST;
+    private speed: TSpeed = { x: 1, y: -1 };
+    private timeInterval = Date.now();
+    private currentLevel: ELevel = ELevel.FIRST;
 
     constructor(position: TPosition, speed: { x: number; y: number }) {
         this.position = position;
