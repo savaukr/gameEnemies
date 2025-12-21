@@ -1,5 +1,5 @@
 import { MenuHeight } from "../const/const";
-import { BtnConfig, CounterConfig, maxTimerConfig } from "../configuration/configMenu";
+import { BOOSTER, BtnConfig, CounterConfig, maxTimerConfig } from "../configuration/configMenu";
 import configuration from "../configuration/configEnemies.json";
 import { SoundManager } from "../soundManager/soundManager";
 import { enemies } from "../enemy/enemiesManager";
@@ -19,9 +19,11 @@ export class Menu {
     isMuted = true;
     isPause = true;
     level: number = ELevel.FIRST;
-    remainingRoundTime: number = maxTimerConfig[this.level];
     setIntervalId: ReturnType<typeof setInterval> | null = null;
     timer = new Timer();
+    boosterTime = 0;
+    remainingRoundTime: number = maxTimerConfig[this.level] + this.boosterTime;
+
     constructor() {
         this.menuElement = document.createElement("div");
         this.menuElement.classList.add("menu-wrapper");
@@ -112,6 +114,11 @@ export class Menu {
                 this.isPause ? this.restore() : this.pause();
                 break;
             case BtnConfig.BOOSTER:
+                if (!this.boosterTime) {
+                    this.boosterTime = BOOSTER;
+                    this.remainingRoundTime = this.remainingRoundTime + this.boosterTime;
+                    this.toggleBoosterDisabled(true);
+                }
                 break;
             case BtnConfig.MUTE:
                 const soundManager = SoundManager.getInstance();
@@ -130,13 +137,15 @@ export class Menu {
         if (counter) {
             switch (className) {
                 case CounterConfig.TIMER:
+                    console.log("this.remainingRoundTime", this.remainingRoundTime);
                     if (
                         this.isStarted &&
                         !this.isPause &&
                         this.remainingRoundTime > 0 &&
                         enemies.getEnimies().length > 0
                     ) {
-                        this.remainingRoundTime = maxTimerConfig[this.level] - this.timer.getTimeValues().seconds;
+                        this.remainingRoundTime =
+                            maxTimerConfig[this.level] + this.boosterTime - this.getTimerSeconds();
                     }
                     counter.innerText =
                         this.remainingRoundTime > 0 ? `${Math.floor(this.remainingRoundTime)} s` : "0 s";
@@ -199,6 +208,8 @@ export class Menu {
     }
     setLevel(level: ELevel): void {
         this.level = level;
+        this.boosterTime = 0;
+        this.toggleBoosterDisabled(false);
     }
     getRemainingTime(): number {
         return this.remainingRoundTime;
@@ -214,6 +225,16 @@ export class Menu {
         this.timer.reset();
         this.updCounter(CounterConfig.TIMER);
         this.updCounter(CounterConfig.ENEMIES);
+    }
+    toggleBoosterDisabled(isDisabled: boolean) {
+        if (isDisabled) {
+            this.menuItemMap.get(BtnConfig.BOOSTER)?.classList.add("disabled");
+        } else {
+            this.menuItemMap.get(BtnConfig.BOOSTER)?.classList.remove("disabled");
+        }
+    }
+    getTimerSeconds(): number {
+        return this.timer.getTimeValues().seconds + this.timer.getTimeValues().minutes * 60;
     }
 }
 

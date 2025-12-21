@@ -6,4 +6,4 @@ export const BtnConfig = {
 
 export const CounterConfig = { TIMER: "timer", ENEMIES: "enemies" } as const;
 export const maxTimerConfig = [60, 50, 40];
-export const Booster = 20;
+export const BOOSTER = 20;
