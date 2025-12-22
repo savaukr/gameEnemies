@@ -9,7 +9,7 @@ import { ELevel } from "../configuration/configLevel";
 export class EnemiesManager {
     onEnemiesCount = new EventEmitters<number>();
     private enemyList: (Enemy | null)[] = [];
-    private static instance: EnemiesManager;
+    static instance: EnemiesManager;
     private isStart: boolean = false;
     private level: number = ELevel.FIRST;
 

@@ -240,6 +240,8 @@ export class Menu {
         this.setIntervalId = null;
         this.remainingRoundTime = maxTimerConfig[this.level];
         this.timer.reset();
+        this.boosterTime = 0;
+        this.toggleBoosterDisabled(false);
         this.updCounter(CounterConfig.TIMER);
         this.updCounter(CounterConfig.ENEMIES);
     }
@@ -250,6 +252,7 @@ export class Menu {
             this.menuItemMap.get(BtnConfig.BOOSTER)?.classList.remove("disabled");
         }
     }
+
     getTimerSeconds(): number {
         return this.timer.getTimeValues().seconds + this.timer.getTimeValues().minutes * 60;
     }
