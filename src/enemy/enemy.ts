@@ -2,7 +2,7 @@ import { TPosition, TSpeed } from "../types/types";
 import { Assets, FederatedPointerEvent, Sprite, Texture } from "pixi.js";
 import { app } from "../index";
 import { getCanvasSize } from "../utils/calculateCanvasZize";
-import { EnymeHeight, EnymeWidth, maxSpeed } from "../const/const";
+import { EnymeHeight, EnymeWidth, maxSpeed, MenuHeight } from "../const/const";
 import { random } from "../utils/getRandom";
 import { SoundManager } from "../soundManager/soundManager";
 import { ELevel } from "../configuration/configLevel";
@@ -38,8 +38,8 @@ export class Enemy {
             this.enemy &&
             event.x > this.enemy.position.x &&
             event.x < this.enemy.position.x + EnymeWidth &&
-            event.y > this.enemy.position.y &&
-            event.y < this.enemy.position.y + EnymeHeight;
+            event.y - MenuHeight > this.enemy.position.y &&
+            event.y - MenuHeight < this.enemy.position.y + EnymeHeight;
         if (isKilled) {
             this.enemy?.parent.removeChild(this.enemy);
             this.killingSound(isKilled);
