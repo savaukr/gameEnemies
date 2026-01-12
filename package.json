@@ -26,6 +26,7 @@
     "author": "jkanchelov",
     "license": "MIT",
     "dependencies": {
+        "@sava_ukr/module-template": "^1.0.12",
         "core-js": "^3.34.0",
         "easytimer.js": "^4.6.0",
         "howler": "^2.2.4",

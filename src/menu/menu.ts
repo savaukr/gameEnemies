@@ -4,14 +4,15 @@ import configuration from "../configuration/configEnemies.json";
 import { SoundManager } from "../soundManager/soundManager";
 import { enemies } from "../enemy/enemiesManager";
 import { app } from "../index";
-import { EventEmitters } from "../eventEmitters/eventEmitters";
+// import { EventEmitters } from "../eventEmitters/eventEmitters";
 import { ELevel } from "../configuration/configLevel";
 import Timer from "easytimer.js";
 import { FederatedPointerEvent } from "pixi.js";
+import { EventEmitter } from "@sava_ukr/module-template";
 
 export class Menu {
     private static instance: Menu;
-    onGameStart = new EventEmitters<boolean>();
+    onGameStart = new EventEmitter<boolean>();
     private menuElement: HTMLDivElement | null = null;
     private startBtn: HTMLButtonElement | null = null;
     menuItemMap = new Map<string, HTMLElement>();
@@ -56,7 +57,7 @@ export class Menu {
         });
         const counter = this.menuItemMap.get(CounterConfig.ENEMIES);
         if (counter) {
-            enemies.onEnemiesCount.subscibe((enemiesCount) => {
+            enemies.onEnemiesCount.subscribe((enemiesCount) => {
                 counter.innerText = `${Object.keys(configuration.enemies[this.level]).length} / ${enemiesCount}`;
             });
         }

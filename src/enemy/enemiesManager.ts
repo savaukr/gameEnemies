@@ -2,12 +2,13 @@ import configuration from "../configuration/configEnemies.json";
 import { Enemy } from "./enemy";
 import { FederatedPointerEvent } from "pixi.js";
 import { SoundManager } from "../soundManager/soundManager";
-import { EventEmitters } from "../eventEmitters/eventEmitters";
+// import { EventEmitters } from "../eventEmitters/eventEmitters";
 import { menu } from "../menu/menu";
 import { ELevel } from "../configuration/configLevel";
+import { EventEmitter } from "@sava_ukr/module-template";
 
 export class EnemiesManager {
-    onEnemiesCount = new EventEmitters<number>();
+    onEnemiesCount = new EventEmitter<number>();
     private enemyList: (Enemy | null)[] = [];
     static instance: EnemiesManager;
     private isStart: boolean = false;
@@ -21,7 +22,7 @@ export class EnemiesManager {
         return this.instance;
     }
     subscribOnStart() {
-        menu.onGameStart.subscibe((isStart) => {
+        menu.onGameStart.subscribe((isStart) => {
             this.isStart = isStart;
         });
     }
