@@ -23,12 +23,12 @@ module.exports = () => {
                             loader: "babel-loader",
                         },
                     ],
-                    exclude: [/node_modules/,  /\.d\.ts$/ ],
+                    exclude: [/node_modules/, /\.d\.ts$/],
                 },
                 {
                     test: /\.tsx?$/,
                     use: "ts-loader",
-                    exclude: [/node_modules/,  /\.d\.ts$/ ],
+                    exclude: [/node_modules/, /\.d\.ts$/],
                 },
             ],
         },
@@ -36,7 +36,7 @@ module.exports = () => {
         output: {
             path: path.resolve(__dirname, "dist"),
             filename: "game.[contenthash].js",
-            publicPath:  '/gameEnemies/'  // Назва репозиторію для деплоя через github pages
+            publicPath: "/gameEnemies/", // Назва репозиторію для деплоя через github pages
         },
 
         optimization: {
