@@ -1,6 +1,6 @@
 {
     "name": "pixi-typescript-boilerplate",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "homepage": "https://savaukr.github.io/gameEnemies",
     "description": "pixi.js typescript boilerplate webpack",
     "browserslist": [
@@ -26,7 +26,7 @@
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "predeploy": "npm run build",
-        "deploy": "gh-pages -d dist",
+        "deploy": "npm run build && gh-pages -d dist",
         "format": "prettier --write .",
         "format:check": "prettier --check ."
     },
