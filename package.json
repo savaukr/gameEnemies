@@ -1,6 +1,7 @@
 {
     "name": "pixi-typescript-boilerplate",
     "version": "1.0.0",
+    "homepage": "https://savaukr.github.io/gameEnemies",
     "description": "pixi.js typescript boilerplate webpack",
     "browserslist": [
         "last 2 versions",
