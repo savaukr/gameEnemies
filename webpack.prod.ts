@@ -36,7 +36,6 @@ module.exports = () => {
         output: {
             path: path.resolve(__dirname, "dist"),
             filename: "game.[contenthash].js",
-            сlean: true,
             publicPath: process.env.NODE_ENV === 'production'
                 ? '/gameEnemies/'  // Назва репозиторію для деплоя через github pages
                 : '/',
