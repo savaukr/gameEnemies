@@ -1,0 +1,38 @@
+{
+    "bundles": [
+        {
+            "name": "game-screen",
+            "assets": [
+                {
+                    "alias": "background",
+                    "src": "assets/background/background.jpg"
+                },
+                {
+                    "alias": "enemy",
+                    "src": "assets/images/enemy.png"
+                },
+                {
+                    "alias": "activeStar",
+                    "src": "assets/images/activeStar.png"
+                },
+                {
+                    "alias": "notActiveStar",
+                    "src": "assets/images/notActiveStar.png"
+                }
+            ]
+        },
+        {
+            "name": "sounds",
+            "assets": [
+                {
+                    "alias": "bg_music",
+                    "src": "assets/sounds/BGM_main_loop.wav"
+                },
+                {
+                    "alias": "kill",
+                    "src": "assets/sounds/kill.wav"
+                }
+            ]
+        }
+    ]
+}
