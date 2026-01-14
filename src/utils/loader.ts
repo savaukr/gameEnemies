@@ -3,7 +3,7 @@ import { calculateCanvasSize } from "./calculateCanvasZize";
 import { app } from "../index";
 
 export async function loadAssets(): Promise<void> {
-    await Assets.init({ manifest: "../assets/manifest.json" });
+    await Assets.init({ manifest: "assets/manifest.json" });
     await Assets.loadBundle(["game-screen", "sounds"]);
 }
 
