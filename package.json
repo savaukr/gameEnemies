@@ -26,9 +26,7 @@
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "predeploy": "npm run build",
-        "deploy": "npm run build && gh-pages -d dist",
-        "format": "prettier --write .",
-        "format:check": "prettier --check ."
+        "deploy": "gh-pages -d dist"
     },
     "author": "pachevskyi",
     "license": "MIT",
